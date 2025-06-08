@@ -445,11 +445,34 @@
         </nav>
     </header>
 
+    @php
+        $belumLaku = 0;
+        $jumlah = 0;
+    @endphp
+
+    @foreach($barangList as $barang)
+        @if(in_array($barang->STATUS_BARANG, ['Tersedia', 'barang untuk donasi', 'Terdonasi', 'Diambil']))
+            @php
+                $belumLaku += 1;
+            @endphp
+        @endif
+    @endforeach
+
+
+    @foreach($barangList as $barang)
+
+        @php
+            $jumlah += 1;
+        @endphp
+
+    @endforeach
+
     <!-- Main Content -->
     <div class="main-container">
         <div class="page-header">
             <h1 class="page-title">Penitipan</h1>
-            <p class="page-subtitle">Kelola dan pantau semua barang yang Anda titipkan di ReuseMart</p>
+            <p class="page-subtitle">Jumlah total barang yang anda titipkan : {{ $jumlah }}</p>
+            <p class="page-subtitle">Jumlah barang yang belum laku : {{ $belumLaku }}</p>
         </div>
 
         <!-- History Table Card -->
@@ -535,10 +558,15 @@
                                         <span class="status-badge status-available">Tersedia</span>
                                     @elseif($barang->STATUS_BARANG == 'Diambil')
                                         <span class="status-badge status-unavailable">Diambil</span>
-                                    @else
+                                    @elseif($barang->STATUS_BARANG == 'Terjual')
                                         <span class="status-badge status-unavailable">Terjual</span>
+                                    @elseif(in_array($barang->STATUS_BARANG, ['barang untuk donasi', 'Terdonasi']))
+                                        <span class="status-badge status-donasi">Barang Donasi</span>
+                                    @else
+                                        <span class="status-badge status-unknown">Tidak Diketahui</span>
                                     @endif
                                 </td>
+
 
                                 <!-- Aksi -->
                                 @php
@@ -548,6 +576,13 @@
                                     });
                                 @endphp
 
+                                @php
+                                    $semuaDonasi = $barangOfPenitipan->every(function ($b) {
+                                        return in_array($b->STATUS_BARANG, ['barang untuk donasi', 'Terdonasi']);
+                                    });
+                                @endphp
+
+
                                 @if($isFirstOfPenitipan)
                                     <td rowspan="{{ $rowspan }}">
                                         <div class="action-buttons">
@@ -556,7 +591,13 @@
                                                     style="border: 1px solid green; padding: 6px; border-radius: 4px; color: green; text-align: center;">
                                                     Terjual Semua
                                                 </div>
+                                            @elseif ($semuaDonasi)
+                                                <div
+                                                    style="border: 1px solid blue; padding: 6px; border-radius: 4px; color: blue; text-align: center;">
+                                                    Barang untuk Donasi
+                                                </div>
                                             @else
+                                                {{-- Tombol Perpanjang --}}
                                                 @if(!$barang->penitipan->STATUS_PERPANJANGAN)
                                                     <form method="POST"
                                                         action="{{ route('barang.perpanjang', $barang->ID_PENITIPAN) }}">
@@ -572,6 +613,7 @@
                                                     </div>
                                                 @endif
 
+                                                {{-- Tombol Ambil Kembali --}}
                                                 @if($barang->penitipan->STATUS_AMBIL_KEMBALI)
                                                     <div
                                                         style="border: 1px solid gray; padding: 6px; border-radius: 4px; color: gray; text-align: center;">
@@ -599,8 +641,6 @@
                                 @endif
                             </tr>
                         @endforeach
-
-
                     </tbody>
                 </table>
             </div>

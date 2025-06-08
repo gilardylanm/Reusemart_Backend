@@ -185,7 +185,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/CSForPembayaran" class="cs-pembayaran">
+                        <a href="{{ route('cs.verif') }}" class="cs-pembayaran">
                             <i class="fas fa-money-check"></i>
                             Verifikasi Pembayaran
                         </a>

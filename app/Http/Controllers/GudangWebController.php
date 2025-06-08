@@ -40,7 +40,7 @@ class GudangWebController extends Controller
     public function pengambilan()
     {
         $pembelianList = Pembelian::where('METODE_PENGIRIMAN', false)
-            ->whereIn('STATUS_PEMBAYARAN', ['verified', 'selesai'])
+            ->whereIn('STATUS_PEMBAYARAN', ['verified', 'selesai', 'hangus'])
             ->get();
 
         return view('jadwalPengambilan', compact('pembelianList'));
@@ -72,6 +72,7 @@ class GudangWebController extends Controller
 
         $now = Carbon::now();
         $akhir = $now->copy()->addDays(30);
+        $batasAmbil = $akhir->copy()->addDays(7);
 
         Penitipan::create([
             'ID_PENITIP' => $id,
@@ -80,7 +81,7 @@ class GudangWebController extends Controller
             'TANGGAL_PENITIPAN' => $now,
             'TANGGAL_BERAKHIR' => $akhir,
             'STATUS_PERPANJANGAN' => false,
-            'BATAS_AMBIL' => NULL,
+            'BATAS_AMBIL' => $batasAmbil,
             'IS_AMBIL' => false,
             'STATUS_AMBIL_KEMBALI' => false,
         ]);

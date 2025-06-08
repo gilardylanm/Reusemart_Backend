@@ -208,6 +208,12 @@
             align-items: center;
             gap: 10px;
         }
+
+        .btn-checkout:disabled {
+            background-color: #ccc;
+            color: #999;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -251,7 +257,9 @@
                         @forelse ($keranjang as $item)
                             @php
                                 $barang = $item->barang;
-                                $total += $barang->HARGA_BARANG;
+                                if ($barang && $barang->STATUS_BARANG === 'Tersedia') {
+                                    $total += $barang->HARGA_BARANG;
+                                }
                             @endphp
 
                             <tr>
@@ -263,7 +271,11 @@
                                         @endif
                                         <div style="margin-left: 10px; display: inline-block; vertical-align: top;">
                                             <strong>{{ $barang->NAMA_BARANG }}</strong><br>
-                                            <small>Kategori: {{ $barang->KATEGORI_BARANG ?? '-' }}</small>
+                                            <small>Kategori: {{ $barang->KATEGORI_BARANG ?? '-' }}</small><br>
+                                            @if($barang->STATUS_BARANG === 'Terjual')
+                                                <span
+                                                    style="color: white; background-color: red; padding: 2px 6px; border-radius: 4px; font-size: 12px;">Terjual</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
@@ -271,13 +283,16 @@
                                     Rp{{ number_format($barang->HARGA_BARANG, 0, ',', '.') }}
                                 </td>
                                 <td style="text-align:center;">
-                                    <form action="{{ route('keranjang.hapus', $item->ID_BARANG) }}" method="POST"
-                                        onsubmit="return confirm('Hapus barang ini dari keranjang?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn-hapus">🗑️</button>
-                                    </form>
-
+                                    @if($barang->STATUS_BARANG === 'Terjual')
+                                        <em style="color: gray;">Barang sudah terjual</em>
+                                    @else
+                                        <form action="{{ route('keranjang.hapus', $item->ID_BARANG) }}" method="POST"
+                                            onsubmit="return confirm('Hapus barang ini dari keranjang?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn-hapus">🗑️</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
@@ -294,13 +309,11 @@
                 <p style="margin-top: 10px; font-size: 18px;">Total:</p>
                 <h2 style="font-size: 28px; font-weight: bold;">Rp {{ number_format($total, 0, ',', '.') }}</h2>
 
-                @if ($total > 0)
-                    <form action="{{ route('checkout') }}" method="GET" style="margin-top: 20px;">
-                        <button class="btn-checkout">
-                            Checkout
-                        </button>
-                    </form>
-                @endif
+                <form action="{{ route('checkout') }}" method="GET" style="margin-top: 20px;">
+                    <button class="btn-checkout" {{ $total == 0 ? 'disabled' : '' }}>
+                        Checkout
+                    </button>
+                </form>
             </div>
         </div>
 

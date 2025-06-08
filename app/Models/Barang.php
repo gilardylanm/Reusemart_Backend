@@ -33,6 +33,12 @@ class Barang extends Model
 
     public function pembelian()
     {
-        return $this->hasMany(Pembelian::class);
+        return $this->belongsToMany(Pembelian::class, 'detailpembelian', 'ID_BARANG', 'ID_PEMBELIAN');
+    }
+
+
+    public function donasi()
+    {
+        return $this->hasOne(Donasi::class);
     }
 }

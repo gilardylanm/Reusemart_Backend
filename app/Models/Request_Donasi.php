@@ -15,7 +15,6 @@ class Request_Donasi extends Model
     protected $fillable = [
         'ID_ORGANISASI',
         'NAMA_BARANG',
-        'NAMA_PENERIMA',
         'DESKRIPSI_REQUEST',
         'TANGGAL_REQUEST',
         'STATUS_REQUEST',
@@ -23,6 +22,7 @@ class Request_Donasi extends Model
 
     public function organisasi()
     {
-        return $this->belongsTo(Organisasi::class);
+        return $this->belongsTo(Organisasi::class, 'ID_ORGANISASI', 'ID_ORGANISASI');
     }
+
 }

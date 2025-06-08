@@ -236,17 +236,12 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/admin/adminForMerchandise" class="admin-merchandise">
+                        <a href="{{ route('merch.index') }}" class="admin-merchandise">
                             <i class="fas fa-gift"></i>
                             Data Merchandise
                         </a>
                     </li>
-                    <li>
-                        <a href="/admin/adminForAlamat" class="admin-alamat">
-                            <i class="fas fa-directions"></i>
-                            Data Alamat
-                        </a>
-                    </li>
+
                     <li>
                         <a href="/admin/adminForReset" class="admin-reset">
                             <i class="fas fa-key"></i>
@@ -281,320 +276,126 @@
                             </tr>
                         </thead>
                         <tbody id="merchandiseTableBody">
-                            <!-- Data will be added dynamically here -->
+                            @foreach ($merchList as $m)
+                                <tr>
+                                    <td><img src="{{ asset('storage/' . $m->GAMBAR_MERCHANDISE) }}" alt="gambar" width="60"></td>
+                                    <td>{{ $m->NAMA_MERCHANDISE }}</td>
+                                    <td>{{ $m->STOK_MERCHANDISE }}</td>
+                                    <td>{{ $m->POIN_DIPERLUKAN }}</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+<!-- Edit Button -->
+                                        <button class="btn btn-warning btn-sm editBtn" data-id="{{ $m->ID_MERCHANDISE }}"
+                                            data-nama="{{ $m->NAMA_MERCHANDISE }}" data-stok="{{ $m->STOK_MERCHANDISE }}"
+                                            data-poin="{{ $m->POIN_DIPERLUKAN }}" data-bs-toggle="modal"
+                                            data-bs-target="#editMerchandiseModal">
+                                            Edit
+                                        </button>
+
+                                        <!-- Delete Form -->
+                                        <form action="{{ route('merchandise.destroy', $m->ID_MERCHANDISE) }}" method="POST"
+                                            onsubmit="return confirm('Yakin ingin menghapus merchandise ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm">Hapus</button>
+                                        </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
-                    <div id="noDataMessage" class="no-data-message">Belum ada data merchandise</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Add Merchandise Modal -->
-    <div class="modal fade" id="addMerchandiseModal" tabindex="-1" aria-labelledby="addMerchandiseModalLabel"
-        aria-hidden="true">
+    <!-- Modal Tambah -->
+    <div class="modal fade" id="addMerchandiseModal" tabindex="-1">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addMerchandiseModalLabel">Tambah Data Merchandise</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+            <form action="{{ route('merchandise.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tambah Merchandise</h5>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" name="NAMA_MERCHANDISE" class="form-control mb-2"
+                            placeholder="Nama Merchandise" required>
+                        <input type="number" name="STOK_MERCHANDISE" class="form-control mb-2" placeholder="Stok" required>
+                        <input type="number" name="POIN_DIPERLUKAN" class="form-control mb-2" placeholder="Poin" required>
+                        <input type="file" name="GAMBAR_MERCHANDISE" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="addMerchandiseForm">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nama Merchandise</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="stock" class="form-label">Stok Merchandise</label>
-                            <input type="number" min="0" class="form-control" id="stock" name="stock" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="points" class="form-label">Poin Diperlukan</label>
-                            <input type="number" min="0" class="form-control" id="points" name="points" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="image" class="form-label">Gambar Merchandise</label>
-                            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-                            <div class="img-preview" id="imagePreview">
-                                <span>Preview gambar</span>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success" id="saveMerchandise">Simpan</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 
-    <!-- Edit Merchandise Modal -->
-    <div class="modal fade" id="editMerchandiseModal" tabindex="-1" aria-labelledby="editMerchandiseModalLabel"
-        aria-hidden="true">
+    <!-- Modal Edit -->
+    <div class="modal fade" id="editMerchandiseModal" tabindex="-1">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editMerchandiseModalLabel">Edit Data Merchandise</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+            <form id="editForm" method="POST" enctype="multipart/form-data">
+                @csrf 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Merchandise</h5>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" name="NAMA_MERCHANDISE" id="editNama" class="form-control mb-2" required>
+                        <input type="number" name="STOK_MERCHANDISE" id="editStok" class="form-control mb-2" required>
+                        <input type="number" name="POIN_DIPERLUKAN" id="editPoin" class="form-control mb-2" required>
+                        <input type="file" name="GAMBAR_MERCHANDISE" class="form-control">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="editMerchandiseForm">
-                        <input type="hidden" id="editMerchandiseIndex">
-                        <div class="mb-3">
-                            <label for="editName" class="form-label">Nama Merchandise</label>
-                            <input type="text" class="form-control" id="editName" name="editName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editStock" class="form-label">Stok Merchandise</label>
-                            <input type="number" min="0" class="form-control" id="editStock" name="editStock" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editPoints" class="form-label">Poin Diperlukan</label>
-                            <input type="number" min="0" class="form-control" id="editPoints" name="editPoints"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editImage" class="form-label">Gambar Merchandise</label>
-                            <input type="file" class="form-control" id="editImage" name="editImage" accept="image/*">
-                            <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar</small>
-                            <div class="img-preview" id="editImagePreview">
-                                <img id="currentImage" src="" alt="Merchandise Preview">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="updateMerchandise">Simpan Perubahan</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        document.querySelectorAll('.editBtn').forEach(button => {
+            button.addEventListener('click', function () {
+                const id = this.dataset.id;
+                const nama = this.dataset.nama;
+                const stok = this.dataset.stok;
+                const poin = this.dataset.poin;
+
+                document.getElementById('editNama').value = nama;
+                document.getElementById('editStok').value = stok;
+                document.getElementById('editPoin').value = poin;
+                document.getElementById('editForm').action = '/merchandise-edit/' + id;
+            });
+        });
+    </script>
+
+    <script>
         // Script dimulai setelah DOM selesai dimuat
         document.addEventListener('DOMContentLoaded', function () {
-            // Array untuk menyimpan data merchandise
-            let merchandises = [];
-
-            // Elemen-elemen yang diperlukan
-            const noDataMessage = document.getElementById('noDataMessage');
-            const merchandiseTableBody = document.getElementById('merchandiseTableBody');
-            const addMerchandiseForm = document.getElementById('addMerchandiseForm');
-            const editMerchandiseForm = document.getElementById('editMerchandiseForm');
-            const saveMerchandiseBtn = document.getElementById('saveMerchandise');
-            const updateMerchandiseBtn = document.getElementById('updateMerchandise');
             const searchInput = document.querySelector('.search-input');
+    const tableBody = document.getElementById('merchandiseTableBody');
 
-            // Inisialisasi modals
-            const addModal = new bootstrap.Modal(document.getElementById('addMerchandiseModal'));
-            const editModal = new bootstrap.Modal(document.getElementById('editMerchandiseModal'));
+    searchInput.addEventListener('keyup', function() {
+        const filter = this.value.toLowerCase();
+        const rows = tableBody.getElementsByTagName('tr');
 
-            // Preview gambar untuk form tambah
-            const imageInput = document.getElementById('image');
-            const imagePreview = document.getElementById('imagePreview');
-
-            imageInput.addEventListener('change', function () {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    imagePreview.innerHTML = `<span>Preview gambar</span>`;
-                }
-            });
-
-            // Preview gambar untuk form edit
-            const editImageInput = document.getElementById('editImage');
-            const editImagePreview = document.getElementById('editImagePreview');
-            const currentImage = document.getElementById('currentImage');
-
-            editImageInput.addEventListener('change', function () {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        currentImage.src = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            // Fungsi untuk memeriksa visibilitas tabel
-            function updateTableVisibility() {
-                if (merchandises.length > 0) {
-                    noDataMessage.style.display = 'none';
-                } else {
-                    noDataMessage.style.display = 'block';
-                }
+        for (let i = 0; i < rows.length; i++) {
+            const rowText = rows[i].textContent.toLowerCase();
+            if (rowText.indexOf(filter) > -1) {
+                rows[i].style.display = ''; // tampilkan baris
+            } else {
+                rows[i].style.display = 'none'; // sembunyikan baris
             }
-
-            // Fungsi untuk menampilkan tabel merchandise
-            function renderMerchandiseTable() {
-                // Kosongkan tbody terlebih dahulu
-                merchandiseTableBody.innerHTML = '';
-
-                // Tampilkan data merchandise
-                merchandises.forEach(function (merchandise, index) {
-                    // Buat elemen baris baru
-                    const row = document.createElement('tr');
-
-                    // Tambahkan sel untuk setiap data
-                    row.innerHTML = `
-                        <td>
-                            <div class="merchandise-img-wrapper">
-                                <img src="${merchandise.image}" alt="${merchandise.name}" class="merchandise-img">
-                            </div>
-                        </td>
-                        <td>${merchandise.name}</td>
-                        <td>${merchandise.stock}</td>
-                        <td>${merchandise.points}</td>
-                        <td>
-                            <button class="btn btn-edit me-2"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="btn btn-delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    `;
-
-                    // Tambahkan event listener untuk tombol edit
-                    const editButton = row.querySelector('.btn-edit');
-                    editButton.addEventListener('click', function () {
-                        openEditModal(index);
-                    });
-
-                    // Tambahkan event listener untuk tombol delete
-                    const deleteButton = row.querySelector('.btn-delete');
-                    deleteButton.addEventListener('click', function () {
-                        if (confirm('Yakin ingin menghapus merchandise ini?')) {
-                            merchandises.splice(index, 1);
-                            renderMerchandiseTable();
-                            updateTableVisibility();
-                        }
-                    });
-
-                    // Tambahkan baris ke dalam tabel
-                    merchandiseTableBody.appendChild(row);
-                });
-
-                // Perbarui visibilitas tabel
-                updateTableVisibility();
-            }
-
-            // Fungsi untuk membuka modal edit
-            function openEditModal(index) {
-                const merchandise = merchandises[index];
-
-                // Isi form dengan data merchandise yang dipilih
-                document.getElementById('editMerchandiseIndex').value = index;
-                document.getElementById('editName').value = merchandise.name;
-                document.getElementById('editStock').value = merchandise.stock;
-                document.getElementById('editPoints').value = merchandise.points;
-                document.getElementById('currentImage').src = merchandise.image;
-
-                // Tampilkan modal edit
-                editModal.show();
-            }
-
-            // Inisialisasi visibilitas tabel
-            updateTableVisibility();
-
-            // Event listener untuk tombol simpan di modal tambah
-            saveMerchandiseBtn.addEventListener('click', function () {
-                // Validasi form
-                if (!addMerchandiseForm.checkValidity()) {
-                    addMerchandiseForm.reportValidity();
-                    return;
-                }
-
-                // Cek apakah gambar sudah dipilih
-                if (!imageInput.files[0]) {
-                    alert('Silakan pilih gambar untuk merchandise');
-                    return;
-                }
-
-                // Ambil data dari form
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const formData = {
-                        name: document.getElementById('name').value,
-                        stock: document.getElementById('stock').value,
-                        points: document.getElementById('points').value,
-                        image: e.target.result
-                    };
-
-                    // Tambahkan data ke array merchandise
-                    merchandises.push(formData);
-
-                    // Reset form dan tutup modal
-                    addMerchandiseForm.reset();
-                    imagePreview.innerHTML = `<span>Preview gambar</span>`;
-                    addModal.hide();
-
-                    // Tampilkan data di tabel
-                    renderMerchandiseTable();
-                }
-                reader.readAsDataURL(imageInput.files[0]);
-            });
-
-            // Event listener untuk tombol update di modal edit
-            updateMerchandiseBtn.addEventListener('click', function () {
-                // Validasi form
-                if (!editMerchandiseForm.checkValidity()) {
-                    editMerchandiseForm.reportValidity();
-                    return;
-                }
-
-                // Ambil index merchandise yang sedang diedit
-                const index = document.getElementById('editMerchandiseIndex').value;
-
-                // Update data merchandise
-                merchandises[index].name = document.getElementById('editName').value;
-                merchandises[index].stock = document.getElementById('editStock').value;
-                merchandises[index].points = document.getElementById('editPoints').value;
-
-                // Cek apakah gambar diubah
-                if (editImageInput.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        merchandises[index].image = e.target.result;
-
-                        // Tutup modal
-                        editModal.hide();
-
-                        // Tampilkan data yang diperbarui di tabel
-                        renderMerchandiseTable();
-                    }
-                    reader.readAsDataURL(editImageInput.files[0]);
-                } else {
-                    // Tutup modal
-                    editModal.hide();
-
-                    // Tampilkan data yang diperbarui di tabel
-                    renderMerchandiseTable();
-                }
-            });
-
-            // Event listener untuk pencarian
-            searchInput.addEventListener('keyup', function () {
-                const searchText = this.value.toLowerCase();
-                const rows = merchandiseTableBody.querySelectorAll('tr');
-
-                rows.forEach(function (row) {
-                    const text = row.textContent.toLowerCase();
-                    if (text.indexOf(searchText) > -1) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
+        }
+    });
         });
     </script>
 </body>

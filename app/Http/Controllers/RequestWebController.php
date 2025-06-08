@@ -33,7 +33,6 @@ class RequestWebController extends Controller
         $validated = $request->validate([
             'DESKRIPSI_REQUEST' => 'required|string|max:255',
             'NAMA_BARANG' => 'required|string|max:100', 
-            'NAMA_PENERIMA' => 'required|string|max:255',
         ]);
 
         // Tambahkan nilai otomatis
@@ -52,7 +51,6 @@ class RequestWebController extends Controller
         $validated = $request->validate([
             'DESKRIPSI_REQUEST' => 'required|string|max:255',
             'NAMA_BARANG' => 'required|string|max:100',
-            'NAMA_PENERIMA' => 'required|string|max:255', // jika digunakan
         ]);
 
         $requestDonasi = Request_Donasi::findOrFail($id);
@@ -61,7 +59,6 @@ class RequestWebController extends Controller
             'ID_ORGANISASI' => session('user_id'), // asumsikan login sebagai organisasi
             'DESKRIPSI_REQUEST' => $validated['DESKRIPSI_REQUEST'],
             'NAMA_BARANG' => $validated['NAMA_BARANG'], // jika ada
-            'NAMA_PENERIMA' => $validated['NAMA_PENERIMA'], 
             'TANGGAL_REQUEST' => now(),
             'STATUS_REQUEST' => 'menunggu',
         ]);

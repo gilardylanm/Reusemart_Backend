@@ -16,14 +16,14 @@ class AutoHanguskanPembelian extends Command
         $today = Carbon::today();
 
         // Ambil semua pembelian yang belum diambil dan melewati batas pengambilan
-        $pembelians = Pembelian::where('STATUS_PENGAMBILAN', false)
+        $pembelians = Pembelian::where('STATUS_PENGAMBILAN', 'Belum Diambil')
             ->whereDate('BATAS_PENGAMBILAN', '<', $today)
             ->whereNull('TANGGAL_DITERIMA')
             ->get();
 
 
         foreach ($pembelians as $pembelian) {
-            $pembelian->STATUS_PEMBAYARAN = 'Hangus';
+            $pembelian->STATUS_PEMBAYARAN = 'hangus';
             $pembelian->save();
 
             foreach ($pembelian->barangs as $barang) {

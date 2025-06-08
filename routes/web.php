@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MerchandiseWebController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrganisasiWebController;
 use App\Http\Controllers\PegawaiWebController;
@@ -14,6 +15,8 @@ use App\Http\Controllers\DiskusiWebController;
 use App\Http\Controllers\GudangWebController;
 use App\Http\Controllers\KeranjangWebController;
 use App\Http\Controllers\PembelianWebController;
+use App\Http\Controllers\MerchandiseWebWebController;
+use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\AuthController;
 
 Route::get('/test-session', function () {
@@ -96,8 +99,27 @@ Route::get('/organisasi', [RequestWebController::class, 'index'])->name('halaman
 
 Route::get('/adminForPegawai', [PegawaiWebController::class, 'index'])->name('halamanAdmin');
 
-Route::get('/halamanPembeli', [PembeliWebController::class, 'mainPage'])->name('halamanPembeli');
 
+
+//////
+Route::get('/owner', [OwnerWebController::class, 'index'])->name('halamanOwner');
+Route::post('/donasi/store', [DonasiController::class, 'store'])->name('donasi.store');
+Route::get('/reqDonasi/cetak', [OwnerWebController::class, 'cetakReqDonasi'])->name('reqDonasi.cetak');
+
+Route::get('/historyDonasi', [OwnerWebController::class, 'historyDonasi'])->name('historyDonasi');
+Route::get('/history/cetak', [OwnerWebController::class, 'cetakHistoryDonasi'])->name('historyDonasi.cetak');
+
+Route::get('/penjualan-per-kategori', [OwnerWebController::class, 'penjualanPerKategori'])->name('penjualan.kategori');
+Route::get('/penjualan-per-kategori/cetak', [OwnerWebController::class, 'cetakNotaKategori'])->name('penjualan.kategori.cetak');
+
+Route::get('/penitipan-habis', [OwnerWebController::class, 'penitipanHabis'])->name('penitipan.habis');
+Route::get('/barang-end/cetak', [OwnerWebController::class, 'cetakBarangEnd'])->name('barangEnd.cetak');
+
+Route::get('/transaksi-penitip', [OwnerWebController::class, 'transaksiPenitip'])->name('transaksi.penitip');
+Route::get('/cetak-transaksi-penitip/{id}', [OwnerWebController::class, 'cetakTransaksiPenitip'])->name('transaksiPenitip.cetak');
+
+//////
+Route::get('/halamanPembeli', [PembeliWebController::class, 'mainPage'])->name('halamanPembeli');
 Route::get('/halamanPenitip', [PenitipWebController::class, 'history'])->name('halamanPenitip');
 
 
@@ -152,7 +174,7 @@ Route::post('/request', [RequestWebController::class, 'store'])->name('request.s
 Route::put('/request/{id}', [RequestWebController::class, 'update'])->name('request.update');
 Route::delete('/request/{id}', [RequestWebController::class, 'destroy'])->name('request.destroy');
 
-Route::get('/owner', [OwnerWebController::class, 'index'])->name('owner');
+
 
 Route::post('/alamat', [AlamatWebController::class, 'store'])->name('alamat.store');
 Route::delete('/alamat/{id}', [AlamatWebController::class, 'destroy'])->name('alamat.destroy');
@@ -163,3 +185,7 @@ Route::post('/reset-password', [PegawaiWebController::class, 'resetPassword'])->
 
 Route::get('/batal/{id}', [PembelianWebController::class, 'batalBeli'])->name('batal.beli');
 
+Route::get('/mercch', [MerchandiseWebController::class, 'index'])->name('merch.index');
+Route::post('/merchandise', [MerchandiseWebController::class, 'store'])->name('merchandise.store');
+Route::post('/merchandise-edit/{id}', [MerchandiseWebController::class, 'update'])->name('merchandise.update');
+Route::delete('/merchandise/{id}', [MerchandiseWebController::class, 'destroy'])->name('merchandise.destroy');

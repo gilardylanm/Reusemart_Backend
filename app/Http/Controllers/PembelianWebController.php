@@ -22,12 +22,18 @@ class PembelianWebController extends Controller
         // Ambil keranjang user
         $keranjang = Keranjang::with('barang')
             ->where('ID_PEMBELI', $id_pembeli)
+            ->whereHas('barang', function ($query) {
+                $query->where('STATUS_BARANG', 'Tersedia');
+            })
             ->get();
 
         $alamatList = Alamat::where('ID_PEMBELI', $id_pembeli)->orderByDesc('IS_DEFAULT')->get();
 
         // Hitung subtotal
-        $subtotal = $keranjang->sum(fn($item) => $item->barang->HARGA_BARANG ?? 0);
+        $subtotal = $keranjang->sum(function ($item) {
+            $barang = $item->barang;
+            return ($barang && $barang->STATUS_BARANG === 'Tersedia') ? $barang->HARGA_BARANG : 0;
+        });
 
         // Ambil poin user (jika pakai poin)
         $poin = Pembeli::find($id_pembeli)?->POIN_PEMBELI ?? 0;
@@ -81,6 +87,8 @@ class PembelianWebController extends Controller
             'STATUS_PENGIRIMAN' => null,
             'STATUS_PENGAMBILAN' => null,
             'KOMISI_REUSEMART' => null,
+            'KOMISI_HUNTER' => 0,
+            'BONUS_PENITIP' => 0,
         ]);
 
         $pembeli = Pembeli::where('ID_PEMBELI', $user)->first();
@@ -335,6 +343,8 @@ class PembelianWebController extends Controller
         $pembelian->STATUS_PENGAMBILAN = 'Sudah Diambil';
         $pembelian->STATUS_PEMBAYARAN = 'selesai';
         $pembelian->KOMISI_REUSEMART = $totalKomisiMart;
+        $pembelian->KOMISI_HUNTER = $komisiHunter;
+        $pembelian->BONUS_PENITIP = $bonusPenitip;
         $pembelian->save();
 
         return redirect()->back()->with('success', 'Pengambilan telah dikonfirmasi.');

@@ -229,13 +229,13 @@
             <!-- Sidebar -->
             <div class="col-md-2 p-0 sidebar">
                 <ul class="sidebar-menu">
-                    <li class="active" data-section="requests">
+                    <li data-section="requests">
                         <a href="{{ route('halamanOwner') }}">
                             <i class="fas fa-list"></i>
                             Request Donasi
                         </a>
                     </li>
-                    <li data-section="history">
+                    <li class="active" data-section="history">
                         <a href="{{ route('historyDonasi') }}">
                             <i class="fas fa-history"></i>
                             History Donasi
@@ -264,60 +264,35 @@
 
             <!-- Main content -->
             <div class="col-md-10 main-content">
-                <!-- Request Donasi Section -->
-                <div id="requestsSection" class="content-section">
-                    <h2 class="section-title">Daftar Request Donasi</h2>
+                <!-- History Donasi Section -->
+                <div id="historySection" class="content-section" >
+                    <h2 class="section-title">History Donasi</h2>
 
                     <!-- Tombol cetak -->
                     <div class="mb-3">
-                        <a href="{{ route('reqDonasi.cetak') }}" class="btn btn-primary me-2" target="_blank">
+                        <a href="{{ route('historyDonasi.cetak') }}" class="btn btn-primary" target="_blank">
                             Cetak Nota
                         </a>
-                        <span class="text-muted">(nota untuk request yang belum terpenuhi)</span>
                     </div>
 
-                    <!-- Request Table -->
+                    <!-- History Table -->
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr class="table-header">
                                     <th scope="col">Organisasi</th>
                                     <th scope="col">Nama Barang</th>
-                                    <th scope="col">Deskripsi</th>
-                                    <th scope="col">Tanggal Request</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col">Tanggal Donasi</th>
+                                    <th scope="col">Nama Penerima</th>
                                 </tr>
                             </thead>
-                            <tbody id="requestsTableBody">
-                                <!-- Data will be populated here -->
-                                @foreach ($reqList as $req)
+                            <tbody id="historyTableBody">
+                                @foreach ($donasiList as $donasi)
                                     <tr>
-                                        <td>{{ $req->organisasi->NAMA_ORGANISASI }}</td>
-                                        <td>{{ $req->NAMA_BARANG }}</td>
-                                        <td>{{ $req->DESKRIPSI_REQUEST }}</td>
-                                        <td>{{ $req->TANGGAL_REQUEST ?? '-' }}</td>
-                                        <td>
-                                            @if ($req->STATUS_REQUEST == 'Donated')
-                                                <span class="badge bg-light text-success border border-success px-2 py-1">
-                                                    {{ $req->STATUS_REQUEST }}
-                                                </span>
-                                            @else
-                                                <span class="badge bg-light text-danger border border-danger px-2 py-1">
-                                                    {{ $req->STATUS_REQUEST }}
-                                                </span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if ($req->STATUS_REQUEST == 'Donated')
-                                                <span class="text-success">Sudah Didonasikan</span>
-                                            @else
-                                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#donasiModal" data-id="{{ $req->ID_REQUEST }}">
-                                                    Donasi Barang
-                                                </button>
-                                            @endif
-                                        </td>
+                                        <td>{{ $donasi->requestDonasi->organisasi->NAMA_ORGANISASI ?? '-' }}</td>
+                                        <td>{{ $donasi->barang->NAMA_BARANG ?? '-' }}</td>
+                                        <td>{{ $donasi->TANGGAL_DONASI ?? '-' }}</td>
+                                        <td>{{ $donasi->NAMA_PENERIMA ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -328,64 +303,9 @@
         </div>
     </div>
 
-    <!-- Modal Donasi -->
-    <div class="modal fade" id="donasiModal" tabindex="-1" aria-labelledby="donasiModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form action="{{ route('donasi.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="ID_REQUEST" id="inputIDRequest">
-
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="donasiModalLabel">Donasi Barang</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <!-- Pilih Barang -->
-                        <div class="mb-3">
-                            <label for="barangSelect" class="form-label">Pilih Barang</label>
-                            <select class="form-select" id="barangSelect" name="ID_BARANG" required>
-                                @foreach ($barangList as $barang)
-                                    @if ($barang->STATUS_BARANG == 'barang untuk donasi')
-                                        <option value="{{ $barang->ID_BARANG }}">{{ $barang->NAMA_BARANG }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Input Nama Penerima -->
-                        <div class="mb-3">
-                            <label for="inputNamaPenerima" class="form-label">Nama Penerima</label>
-                            <input type="text" class="form-control" id="inputNamaPenerima" name="NAMA_PENERIMA"
-                                required>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Donasikan</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var donasiModal = document.getElementById('donasiModal');
-            donasiModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var idRequest = button.getAttribute('data-id');
-                document.getElementById('inputIDRequest').value = idRequest;
-            });
-        });
-    </script>
+    
 </body>
 
 </html>

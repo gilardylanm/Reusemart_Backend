@@ -218,7 +218,14 @@
                                     <td>{{ $p->BATAS_PENGAMBILAN ?? '-' }}</td>
                                     <td>{{ $p->TANGGAL_DITERIMA ?? '-' }}</td>
                                     <td>
-                                        @if (!$p->BATAS_PENGAMBILAN)
+                                        @if ($p->STATUS_PEMBAYARAN == 'hangus')
+                                            <!-- Status Hangus -->
+                                            <span class="badge bg-light text-danger border border-danger px-3 py-2"
+                                                style="font-size: 0.9rem;">
+                                                Hangus
+                                            </span>
+
+                                        @elseif (!$p->BATAS_PENGAMBILAN)
                                             <!-- Tombol Jadwalkan -->
                                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#jadwalModal" data-id="{{ $p->ID_PEMBELIAN }}"
@@ -245,7 +252,7 @@
                                         @if ($p->TANGGAL_DITERIMA)
                                             <!-- Cetak Nota -->
                                             <a href="{{ route('pembelian.cetak', $p->ID_PEMBELIAN) }}"
-                                                class="btn btn-sm btn-success " target="_blank">
+                                                class="btn btn-sm btn-success" target="_blank">
                                                 Cetak Nota
                                             </a>
                                         @endif

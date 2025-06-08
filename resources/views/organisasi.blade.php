@@ -208,7 +208,6 @@
                         <tr class="table-header">
                             <th scope="col">Nama Barang</th>
                             <th scope="col">Deskripsi Request</th>
-                            <th scope="col">Nama Penerima</th>
                             <th scope="col">Tanggal Request</th>
                             <th scope="col">Status</th>
                             <th scope="col">Action</th>
@@ -219,7 +218,6 @@
                             <tr>
                                 <td>{{ $request->NAMA_BARANG }}</td>
                                 <td>{{ $request->DESKRIPSI_REQUEST }}</td>
-                                <td>{{ $request->NAMA_PENERIMA }}</td>
                                 <td>{{ $request->TANGGAL_REQUEST }}</td>
                                 <td>{{ $request->STATUS_REQUEST }}</td>
                                 <td>
@@ -268,11 +266,6 @@
                                                     <textarea name="DESKRIPSI_REQUEST" class="form-control"
                                                         required>{{ $request->DESKRIPSI_REQUEST }}</textarea>
                                                 </div>
-                                                <div class="form-group mt-2">
-                                                    <label>Nama Penerima</label>
-                                                    <textarea name="NAMA_PENERIMA" class="form-control"
-                                                        required>{{ $request->NAMA_PENERIMA }}</textarea>
-                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
@@ -313,10 +306,6 @@
                             <label for="deskripsiRequest" class="form-label">Deskripsi Request</label>
                             <textarea class="form-control" id="deskripsiRequest" name="DESKRIPSI_REQUEST" rows="3"
                                 required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="namaPenerima" class="form-label">Nama Penerima</label>
-                            <input type="text" class="form-control" id="namaPenerima" name="NAMA_PENERIMA" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -453,7 +442,6 @@
                 if (request) {
                     document.getElementById('namaBarang').value = request.namaBarang;
                     document.getElementById('deskripsiRequest').value = request.deskripsi;
-                    document.getElementById('namaPenerima').value = request.namaPenerima;
 
                     const modal = new bootstrap.Modal(document.getElementById('requestModal'));
                     modal.show();

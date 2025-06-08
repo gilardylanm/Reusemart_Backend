@@ -223,17 +223,12 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/admin/adminForMerchandise" class="admin-merchandise">
+                        <a href="{{ route('merch.index') }}" class="admin-merchandise">
                             <i class="fas fa-gift"></i>
                             Data Merchandise
                         </a>
                     </li>
-                    <li>
-                        <a href="/admin/adminForAlamat" class="admin-alamat">
-                            <i class="fas fa-directions"></i>
-                            Data Alamat
-                        </a>
-                    </li>
+                    
                     <li>
                         <a href="/admin/adminForReset" class="admin-reset">
                             <i class="fas fa-key"></i>

@@ -105,12 +105,11 @@ class BarangWebController extends Controller
     {
         $penitipan = Penitipan::findOrFail($id);
 
-        // Pastikan barang tersedia
-
         // Tambah 30 hari dari tanggal berakhir saat ini
 
         $penitipan->STATUS_PERPANJANGAN = true;
         $penitipan->TANGGAL_BERAKHIR = Carbon::parse($penitipan->TANGGAL_BERAKHIR)->addDays(30);
+        $penitipan->BATAS_AMBIL = Carbon::parse($penitipan->TANGGAL_BERAKHIR)->copy()->addDays(7);
         $penitipan->save();
 
         return back()->with('success', 'Tanggal berakhir berhasil diperpanjang 30 hari.');

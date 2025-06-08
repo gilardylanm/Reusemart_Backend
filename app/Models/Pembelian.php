@@ -31,6 +31,8 @@ class Pembelian extends Model
         'STATUS_PENGIRIMAN',
         'STATUS_PENGAMBILAN',
         'KOMISI_REUSEMART',
+        'KOMISI_HUNTER',
+        'BONUS_PENITIP',
     ];
     public function pembeli()
     {

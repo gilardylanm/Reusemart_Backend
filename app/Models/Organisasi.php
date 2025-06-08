@@ -28,7 +28,7 @@ class Organisasi extends Model
 
     public function request()
     {
-        return $this->hasOne(Request_Donasi::class, 'ID_ORGANISASI');
+        return $this->hasMany(Request_Donasi::class, 'ID_ORGANISASI');
     }
 
     public function getAuthPassword()

@@ -13,9 +13,10 @@ class PembeliWebController extends Controller
 {
     public function mainPage()
     {
-        $products = Barang::all(); // atau bisa disesuaikan dengan relasi kategori
+        $products = Barang::whereIn('STATUS_BARANG', ['Tersedia', 'Terjual'])->get();
         return view('halamanPembeli', compact('products'));
     }
+
 
     public function index()
     {
@@ -26,8 +27,8 @@ class PembeliWebController extends Controller
         }
 
         // Ambil data pembeli dari database
-        
-        
+
+
         $pembeli = Pembeli::find($pembeliId);
         $alamatList = Alamat::where('ID_PEMBELI', $pembeliId)->get();
         return view('ProfilPembeli', compact('pembeli', 'alamatList'));
