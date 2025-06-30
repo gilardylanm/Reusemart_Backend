@@ -242,9 +242,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/csForMerchandise" class="cs-merchandise">
+                        <a href="{{ route('penukaran.list') }}" class="cs-merchandise">
                             <i class="fas fa-gift"></i>
-                            Kelola Merchandise
+                            List Penukaran Merchandise
                         </a>
                     </li>
                     <li>

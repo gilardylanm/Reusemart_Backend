@@ -242,9 +242,14 @@
             <img src="/img/Logo ReuseMart.jpg" alt="ReuseMart Logo">
         </div>
         <nav>
-            <a href="#">Beranda</a>
-            <a href="#">Kelola Gudang</a>
-            <a href="#">Profil Akun</a>
+            <a href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+            </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </nav>
     </header>
 
@@ -254,19 +259,19 @@
             <div class="col-md-2 p-0 sidebar">
                 <ul class="sidebar-menu">
                     <li class="active">
-                        <a href="#" class="kelola-penitipan">
+                        <a href="{{ route('halamanGudang') }}" class="kelola-penitipan">
                             <i class="fas fa-box"></i>
                             Kelola Penitipan
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="kelola-pengiriman">
+                        <a href="{{ route('jadwal.kirim') }}" class="kelola-pengiriman">
                             <i class="fas fa-truck"></i>
                             Kelola Jadwal Pengiriman
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="kelola-ambil">
+                        <a href="{{ route('jadwal.ambil') }}" class="kelola-ambil">
                             <i class="fas fa-hand-holding"></i>
                             Kelola Jadwal Pengambilan
                         </a>
@@ -276,9 +281,9 @@
 
             <!-- Main content -->
             <div class="col-md-10 main-content">
-                <button type="button" class="btn btn-secondary mb-3" onclick="window.history.back()">
+                <a href="{{ route('penitip.detail', $penitipan->penitip->ID_PENITIP) }}" class="btn btn-secondary mb-3">
                     <i class="fas fa-arrow-left me-2"></i>Kembali
-                </button>
+                </a>
 
 
                 <h4 class="page-title" id="pageTitle">Tambah Barang Penitipan Milik

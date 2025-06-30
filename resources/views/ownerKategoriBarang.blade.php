@@ -238,25 +238,43 @@
                     <li data-section="history">
                         <a href="{{ route('historyDonasi') }}">
                             <i class="fas fa-history"></i>
-                            History Donasi
+                            Laporan Donasi Barang
                         </a>
                     </li>
                     <li class="active" data-section="history">
                         <a href="{{ route('penjualan.kategori') }}">
                             <i class="fas fa-history"></i>
-                            Penjualan Per Kategori Barang
+                            Laporan Penjualan Per Kategori Barang
                         </a>
                     </li>
-                    <li  data-section="history">
+                    <li data-section="history">
                         <a href="{{ route('penitipan.habis') }}">
                             <i class="fas fa-history"></i>
-                            Barang Yang Masa Penitipannya Habis
+                            Laporan Barang Yang Masa Penitipannya Habis
                         </a>
                     </li>
-                    <li  data-section="history">
+                    <li data-section="history">
                         <a href="{{ route('transaksi.penitip') }}">
                             <i class="fas fa-history"></i>
-                            Transaksi Penitip
+                            Laporan Transaksi Penitip
+                        </a>
+                    </li>
+                    <li data-section="history">
+                        <a href="{{ route('laporan.perbulan') }}">
+                            <i class="fas fa-history"></i>
+                            Laporan Penjualan Bulanan
+                        </a>
+                    </li>
+                    <li data-section="history">
+                        <a href="{{ route('komisi.perbulan') }}">
+                            <i class="fas fa-history"></i>
+                            Laporan Komisi Bulanan
+                        </a>
+                    </li>
+                    <li data-section="history">
+                        <a href="{{ route('laporan.gudang') }}">
+                            <i class="fas fa-history"></i>
+                            Laporan Stok Gudang
                         </a>
                     </li>
                 </ul>
@@ -268,9 +286,27 @@
                 <div id="requestsSection" class="content-section">
                     <h2 class="section-title">Daftar Penjualan Per Kategori Barang</h2>
 
+                    <!-- Form filter tahun -->
+                    <form method="GET" action="{{ route('penjualan.kategori') }}"
+                        class="mb-3 d-flex align-items-center gap-2">
+                        <label for="tahun" class="form-label m-0">Pilih Tahun:</label>
+                        <select name="tahun" id="tahun" class="form-select w-auto" onchange="this.form.submit()">
+                            @php
+                                $currentYear = date('Y');
+                                $startYear = 2022;
+                            @endphp
+                            @for ($year = $currentYear; $year >= $startYear; $year--)
+                                <option value="{{ $year }}" {{ request('tahun', $currentYear) == $year ? 'selected' : '' }}>
+                                    {{ $year }}
+                                </option>
+                            @endfor
+                        </select>
+                    </form>
+
                     <!-- Tombol cetak -->
                     <div class="mb-3">
-                        <a href="{{ route('penjualan.kategori.cetak') }}" class="btn btn-primary" target="_blank">
+                        <a href="{{ route('penjualan.kategori.cetak', ['tahun' => $tahun]) }}" class="btn btn-primary"
+                            target="_blank">
                             Cetak Nota
                         </a>
                     </div>

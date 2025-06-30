@@ -171,7 +171,7 @@
             <div class="col-md-2 p-0 sidebar">
                 <ul class="sidebar-menu">
                     <li class="active">
-                        <a href="#" class="kelola-penitipan">
+                        <a href="{{ route('halamanGudang') }}" class="kelola-penitipan">
                             <i class="fas fa-box"></i>
                             Kelola Penitipan
                         </a>
@@ -182,7 +182,7 @@
                             Kelola Jadwal Pengiriman
                         </a>
                     </li>
-                    <li>
+                    <li >
                         <a href="{{ route('jadwal.ambil') }}" class="kelola-ambil">
                             <i class="fas fa-hand-holding"></i>
                             Kelola Jadwal Pengambilan

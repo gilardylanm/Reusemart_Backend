@@ -22,6 +22,45 @@
             height: 100vh;
         }
 
+        /* Background Carousel */
+        .background-carousel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .carousel-slide.active {
+            opacity: 0.7;
+        }
+
+        /* Overlay untuk memberikan efek transparan */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(13, 92, 79, 0.8), rgba(13, 92, 79, 0.6));
+            z-index: -1;
+        }
+
         .container {
             display: flex;
             background-color: #E5E5E5;
@@ -327,6 +366,35 @@
 </head>
 
 <body>
+    <!-- Background Carousel -->
+    <div class="background-carousel">
+        <div class="carousel-slide active"
+            style="background-image: url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')">
+        </div>
+        <div class="carousel-slide"
+            style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')">
+        </div>
+        <div class="carousel-slide"
+            style="background-image: url('https://images.unsplash.com/photo-1472851294608-062f824d29cc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')">
+        </div>
+        <div class="carousel-slide"
+            style="background-image: url('https://images.unsplash.com/photo-1607083206968-13611e3d76db?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')">
+        </div>
+    </div>
+
+    <!-- Background Overlay -->
+    <div class="background-overlay"></div>
+
+    <!-- Carousel Navigation Dots -->
+    <div class="carousel-dots">
+        <div class="dot active" data-slide="0"></div>
+        <div class="dot" data-slide="1"></div>
+        <div class="dot" data-slide="2"></div>
+        <div class="dot" data-slide="3"></div>
+        <div class="dot" data-slide="4"></div>
+    </div>
+
+
     <div class="container">
         <div class="left-section">
             <img src="/img/Login Page Left.png" alt="Left Section">
@@ -407,7 +475,7 @@
                 </div>
 
                 <div class="forgot-password">
-                    <a href="/password/reset">Lupa Password?</a>
+                    <a href="#">Lupa Password?</a>
                 </div>
 
                 <div class="register">
@@ -480,8 +548,59 @@
         });
 
         document.getElementById("guest-login").addEventListener("click", function () {
-        window.location.href = "/";
-    });
+            window.location.href = "/";
+        });
+
+        // Background Carousel Functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = slides.length;
+
+        function showSlide(index) {
+            // Remove active class from all slides and dots
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            // Add active class to current slide and dot
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        // Auto-advance carousel every 5 seconds
+        setInterval(nextSlide, 5000);
+
+        // Handle dot clicks for manual navigation
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
+        });
+
+        // Pause carousel on hover (optional)
+        const container = document.querySelector('.container');
+        let carouselInterval;
+
+        function startCarousel() {
+            carouselInterval = setInterval(nextSlide, 5000);
+        }
+
+        function stopCarousel() {
+            clearInterval(carouselInterval);
+        }
+
+        container.addEventListener('mouseenter', stopCarousel);
+        container.addEventListener('mouseleave', startCarousel);
+
+        // Start the carousel
+        startCarousel();
+
     </script>
 </body>
 

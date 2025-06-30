@@ -698,7 +698,7 @@
         <nav>
             <a href="/halamanPembeli">Beranda</a>
             <a href="/keranjang">Keranjang</a>
-            <a href="#">History</a>
+            <a href="{{ route('histori.pembelian') }}">History</a>
             <a href="/profilPembeli" class="active">Profil Akun</a>
         </nav>
     </header>
@@ -762,8 +762,8 @@
                     <div class="reward-points">{{ $pembeli->POIN_PEMBELI ?? 0 }}</div>
                     <div class="reward-label">Total Poin Anda</div>
 
-                    <button class="reward-btn">
-                        <i class="fas fa-exchange-alt" style="margin-right: 8px;"></i>
+                    <button class="reward-btn btn btn-primary" data-bs-toggle="modal" data-bs-target="#tukarPoinModal">
+                        <i class="fas fa-exchange-alt me-2"></i>
                         Tukar Poin
                     </button>
 
@@ -986,6 +986,22 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="tukarPoinModal" tabindex="-1" aria-labelledby="tukarPoinModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="tukarPoinModalLabel">Informasi Penukaran Poin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body text-center">
+                    Silakan Tukar Poin Anda Melalui Aplikasi Mobile <strong>ReuseMart</strong>.
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- JavaScript for interactions -->
     <script>
@@ -1300,6 +1316,10 @@
         // Initialize empty state
         updateEmptyState();
     </script>
+
+    <!-- Bootstrap JS  -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

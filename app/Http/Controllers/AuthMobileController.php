@@ -39,7 +39,7 @@ class AuthMobileController extends Controller
 
         // 4. Cek Hunter
         $hunter = DB::table('hunter')->where('EMAIL_HUNTER', $email)->first();
-        if ($hunter && Hash::check($password, $hunter->PASSWORD_HUNTER)) {
+        if ($hunter && $password === $hunter->PASSWORD_HUNTER) {
             return response()->json(['role' => 'hunter', 'data' => $hunter]);
         }
 

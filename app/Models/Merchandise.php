@@ -18,4 +18,9 @@ class Merchandise extends Model
         'STOK_MERCHANDISE',
         'POIN_DIPERLUKAN',
     ];
+
+    public function penukaranpoin()
+    {
+        return $this->hasMany(PenukaranPoin::class);
+    }
 }

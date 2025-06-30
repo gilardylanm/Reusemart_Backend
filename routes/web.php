@@ -4,7 +4,7 @@ use App\Http\Controllers\MerchandiseWebController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrganisasiWebController;
 use App\Http\Controllers\PegawaiWebController;
-use App\Http\Controllers\jabatanWebController;
+use App\Http\Controllers\JabatanWebController;
 use App\Http\Controllers\PenitipWebController;
 use App\Http\Controllers\PembeliWebController;
 use App\Http\Controllers\RequestWebController;
@@ -15,8 +15,8 @@ use App\Http\Controllers\DiskusiWebController;
 use App\Http\Controllers\GudangWebController;
 use App\Http\Controllers\KeranjangWebController;
 use App\Http\Controllers\PembelianWebController;
-use App\Http\Controllers\MerchandiseWebWebController;
 use App\Http\Controllers\DonasiController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\AuthController;
 
 Route::get('/test-session', function () {
@@ -49,7 +49,7 @@ Route::post('/pembelian/{id}/tolak', [PembelianWebController::class, 'tolak'])->
 
 // Tampilkan form login
 Route::get('/login', function () {
-    return view('loginPage'); // Ganti 'login' dengan nama file blade kamu jika berbeda
+    return view('LoginPage'); // Ganti 'login' dengan nama file blade kamu jika berbeda
 })->name('login.form');
 
 // Proses login
@@ -118,6 +118,16 @@ Route::get('/barang-end/cetak', [OwnerWebController::class, 'cetakBarangEnd'])->
 Route::get('/transaksi-penitip', [OwnerWebController::class, 'transaksiPenitip'])->name('transaksi.penitip');
 Route::get('/cetak-transaksi-penitip/{id}', [OwnerWebController::class, 'cetakTransaksiPenitip'])->name('transaksiPenitip.cetak');
 
+//
+Route::get('/laporan/penjualan-perbulan', [OwnerWebController::class, 'laporanBulanan'])->name('laporan.perbulan');
+Route::get('/laporan-bulanan/cetak', [OwnerWebController::class, 'cetakLaporanBulanan'])->name('laporanBulanan.cetak');
+
+Route::get('/laporan-komisi', [OwnerWebController::class, 'laporanKomisi'])->name('komisi.perbulan');
+Route::get('/laporan-komisi/cetak', [OwnerWebController::class, 'laporanKomisi'])->name('laporanKomisi.cetak');
+
+Route::get('/laporan-gudang', [OwnerWebController::class, 'laporanGudang'])->name('laporan.gudang');
+Route::get('/laporan-gudang/cetak', [OwnerWebController::class, 'cetakLaporanGudang'])->name('laporanGudang.cetak');
+
 //////
 Route::get('/halamanPembeli', [PembeliWebController::class, 'mainPage'])->name('halamanPembeli');
 Route::get('/halamanPenitip', [PenitipWebController::class, 'history'])->name('halamanPenitip');
@@ -138,6 +148,7 @@ Route::get('/profilPembeli', [PembeliWebController::class, 'index'])->name('pemb
 Route::get('/admin/adminForMerchandise', function () {
     return view('admin/adminForMerchandise');
 });
+
 
 Route::post('/register-organisasi', [OrganisasiWebController::class, 'register'])->name('organisasi.register');
 Route::get('/admin/adminForOrganisasi', [OrganisasiWebController::class, 'index']);
@@ -189,3 +200,12 @@ Route::get('/mercch', [MerchandiseWebController::class, 'index'])->name('merch.i
 Route::post('/merchandise', [MerchandiseWebController::class, 'store'])->name('merchandise.store');
 Route::post('/merchandise-edit/{id}', [MerchandiseWebController::class, 'update'])->name('merchandise.update');
 Route::delete('/merchandise/{id}', [MerchandiseWebController::class, 'destroy'])->name('merchandise.destroy');
+
+Route::get('/histori-pembelian', [PembelianWebController::class, 'historyPembelian'])->name('histori.pembelian');
+Route::post('/beri-rating', [RatingController::class, 'store']);
+
+Route::get('/penukaranList', [MerchandiseWebController::class, 'penukaranList'])->name('penukaran.list');
+
+Route::get('/perpanjanganBarangList', [PenitipWebController::class, 'barangPerpanjangan'])->name('barang.perpanjangan');
+
+Route::put('/penitipan/perpanjang/{id}', [PenitipWebController::class, 'perpanjang'])->name('penitipan.perpanjang');

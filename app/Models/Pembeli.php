@@ -40,5 +40,10 @@ class Pembeli extends Authenticatable
     {
         return $this->hasMany(Pembelian::class, 'ID_PEMBELIAN');
     }
+
+    public function penukaranpoin()
+    {
+        return $this->hasMany(PenukaranPoin::class);
+    }
 }
 

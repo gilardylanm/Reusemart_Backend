@@ -36,9 +36,18 @@ class Barang extends Model
         return $this->belongsToMany(Pembelian::class, 'detailpembelian', 'ID_BARANG', 'ID_PEMBELIAN');
     }
 
-
     public function donasi()
     {
         return $this->hasOne(Donasi::class);
+    }
+
+    public function detailPembelian()
+    {
+        return $this->hasMany(DetailPembelian::class, 'ID_BARANG');
+    }
+
+    public function rating()
+    {
+        return $this->hasMany(Rating::class, 'ID_BARANG');
     }
 }

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
+use Carbon\Carbon;
+
 
 class PenitipWebController extends Controller
 {
@@ -141,4 +143,53 @@ class PenitipWebController extends Controller
 
         return view('CSForPenitip', compact('penitips'));
     }
+
+    public function barangPerpanjangan()
+    {
+        $penitipId = session('user_id');
+        $penitip = Penitip::findOrFail($penitipId);
+
+        // Ambil penitipan milik penitip login
+        $penitipanIds = Penitipan::where('ID_PENITIP', $penitipId)->pluck('ID_PENITIPAN');
+
+        // Ambil barang yang FK-nya ada di penitipan tersebut
+
+
+        $barangList = Barang::whereIn('ID_PENITIPAN', $penitipanIds)
+            ->whereHas('penitipan', function ($query) {
+                $query->where('STATUS_PERPANJANGAN', true); // atau '1' kalau boolean-nya string
+            })
+            ->get();
+        return view('barangPerpanjangan', compact('barangList', 'penitip'));
+    }
+
+    public function perpanjang($id)
+    {
+        $penitipan = Penitipan::findOrFail($id);
+        $penitip = $penitipan->penitip;
+
+        $barangList = Barang::where('ID_PENITIPAN', $penitipan->ID_PENITIPAN)->get();
+        $totalHarga = $barangList->sum('HARGA_BARANG');
+        $potongan = $totalHarga * 0.05;
+        
+
+        // Cek saldo cukup
+        if ($penitip->SALDO_PENITIP < $potongan) {
+            return back()->with('error', 'Saldo penitip tidak mencukupi untuk perpanjangan.');
+        }
+
+        // Proses perpanjangan
+        $tanggalBerakhirBaru = Carbon::parse($penitipan->TANGGAL_BERAKHIR)->addDays(30);
+        $penitipan->TANGGAL_BERAKHIR = $tanggalBerakhirBaru;
+        $penitipan->BATAS_AMBIL = $tanggalBerakhirBaru->copy()->addDays(7);
+        $penitipan->STATUS_PERPANJANGAN = true;
+
+        $penitip->SALDO_PENITIP -= $potongan;
+
+        $penitipan->save();
+        $penitip->save();
+
+        return back()->with('success', 'Berhasil diperpanjang dan saldo telah dipotong.');
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Keranjang;
 use App\Models\Pembeli;
@@ -362,4 +363,60 @@ class PembelianWebController extends Controller
         $namaFile = 'Nota_Pembelian_' . $pembelian->ID_PEMBELIAN . '.pdf';
         return $pdf->download($namaFile);
     }
+
+    public function historyPembelian(Request $request)
+    {
+        $pembeliId = session('user_id');
+
+        $query = DB::table('pembelian')
+            ->join('detailpembelian', 'pembelian.ID_PEMBELIAN', '=', 'detailpembelian.ID_PEMBELIAN')
+            ->join('barang', 'detailpembelian.ID_BARANG', '=', 'barang.ID_BARANG')
+            ->leftJoin('rating', function ($join) use ($pembeliId) {
+                $join->on('rating.ID_BARANG', '=', 'barang.ID_BARANG')
+                    ->where('rating.ID_PEMBELI', '=', $pembeliId);
+            })
+            ->select(
+                'barang.ID_BARANG',
+                'barang.NAMA_BARANG',
+                'barang.HARGA_BARANG',
+                'barang.GAMBAR_1',
+                'pembelian.TANGGAL_PEMBELIAN',
+                DB::raw("CASE
+                WHEN pembelian.STATUS_PENGIRIMAN IS NOT NULL THEN
+                    CASE 
+                        WHEN pembelian.STATUS_PENGIRIMAN = 'Dikirim' THEN 'Dikirim'
+                        WHEN pembelian.STATUS_PENGIRIMAN = 'Selesai' THEN 'Diterima'
+                        ELSE pembelian.STATUS_PENGIRIMAN
+                    END
+                ELSE
+                    CASE
+                        WHEN pembelian.STATUS_PENGAMBILAN = 'Belum Diambil' THEN 'Belum Diambil'
+                        WHEN pembelian.STATUS_PENGAMBILAN = 'Sudah Diambil' THEN 'Diterima'
+                        ELSE pembelian.STATUS_PENGAMBILAN
+                    END
+            END AS status_barang"),
+                'rating.JUMLAH_BINTANG'
+            )
+            ->where('pembelian.ID_PEMBELI', $pembeliId);
+
+        // ✅ Filter: Tahun
+        if ($request->filled('tahun')) {
+            $query->whereYear('pembelian.TANGGAL_PEMBELIAN', $request->tahun);
+        }
+
+        // ✅ Filter: Bulan
+        if ($request->filled('bulan')) {
+            $query->whereMonth('pembelian.TANGGAL_PEMBELIAN', $request->bulan);
+        }
+
+        // ✅ Filter: Nama Barang
+        if ($request->filled('nama')) {
+            $query->where('barang.NAMA_BARANG', 'like', '%' . $request->nama . '%');
+        }
+
+        $items = $query->orderByDesc('pembelian.TANGGAL_PEMBELIAN')->get();
+
+        return view('historyPembelian', compact('items'));
+    }
+
 }

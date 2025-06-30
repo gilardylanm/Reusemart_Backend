@@ -104,7 +104,7 @@
                 Keranjang
             </a>
 
-            <a href="#">History</a>
+            <a href="{{ route('histori.pembelian') }}">History</a> 
             <a href="{{ route('pembeli.index') }}">Profil Akun</a>
         </nav>
     </header>

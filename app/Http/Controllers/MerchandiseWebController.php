@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Merchandise;
+use App\Models\PenukaranPoin;
 use Illuminate\Http\Request;
 
 class MerchandiseWebController extends Controller
@@ -65,4 +66,11 @@ class MerchandiseWebController extends Controller
         Merchandise::destroy($id);
         return redirect()->back()->with('success', 'Data berhasil dihapus.');
     }
+
+    public function penukaranList()
+    {
+        $merchList = PenukaranPoin::all();
+        return view('CSForMerch', compact('merchList'));
+    }
+
 }

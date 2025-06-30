@@ -44,4 +44,5 @@ class Penitipan extends Model
     {
         return $this->belongsTo(Hunter::class, 'ID_HUNTER');
     }
+
 }

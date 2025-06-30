@@ -233,17 +233,7 @@
 
 <body>
     <div class="container mt-4">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
 
-        @if (session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
 
         <div class="row">
             <div class="col-md-6">
@@ -289,11 +279,19 @@
 
                 @endif
 
+                @if (session('user_type') === 'pembeli')
+                    <!-- Tombol Back -->
+                    <a href="/halamanPembeli" class="back-btn">
+                        Kembali Ke Halaman Utama
+                    </a>
+                @endif
 
-                <!-- Tombol Back -->
-                <a href="/halamanPembeli" class="back-btn">
-                    Kembali Ke Halaman Utama
-                </a>
+                @if (session('user_type') === 'pegawai')
+                    <!-- Tombol Back -->
+                    <a href="{{ route('cs.diskusi.index') }}" class="back-btn">
+                        Kembali
+                    </a>
+                @endif
             </div>
 
             <div class="col-md-6">

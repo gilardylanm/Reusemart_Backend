@@ -226,7 +226,7 @@
         <nav>
             <a href="/halamanPembeli">Beranda</a>
             <a href="/keranjang" class="active">Keranjang</a>
-            <a href="#">History</a>
+            <a href="{{ route('histori.pembelian') }}">History</a> 
             <a href="/profilPembeli">Profil Akun</a>
         </nav>
     </header>

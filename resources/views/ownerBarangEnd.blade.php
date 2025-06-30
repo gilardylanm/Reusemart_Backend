@@ -238,25 +238,43 @@
                     <li data-section="history">
                         <a href="{{ route('historyDonasi') }}">
                             <i class="fas fa-history"></i>
-                            History Donasi
-                        </a>
-                    </li>
-                    <li data-section="history">
-                        <a href="{{ route('penjualan.kategori') }}">
-                            <i class="fas fa-history"></i>
-                            Penjualan Per Kategori Barang
-                        </a>
-                    </li>
-                    <li class="active" data-section="history">
-                        <a href="{{ route('penitipan.habis') }}">
-                            <i class="fas fa-history"></i>
-                            Barang Yang Masa Penitipannya Habis
+                            Laporan Donasi Barang
                         </a>
                     </li>
                     <li  data-section="history">
+                        <a href="{{ route('penjualan.kategori') }}">
+                            <i class="fas fa-history"></i>
+                            Laporan Penjualan Per Kategori Barang
+                        </a>
+                    </li>
+                    <li  class="active"data-section="history">
+                        <a href="{{ route('penitipan.habis') }}">
+                            <i class="fas fa-history"></i>
+                            Laporan Barang Yang Masa Penitipannya Habis
+                        </a>
+                    </li>
+                    <li data-section="history">
                         <a href="{{ route('transaksi.penitip') }}">
                             <i class="fas fa-history"></i>
-                            Transaksi Penitip
+                            Laporan Transaksi Penitip
+                        </a>
+                    </li>
+                    <li data-section="history">
+                        <a href="{{ route('laporan.perbulan') }}">
+                            <i class="fas fa-history"></i>
+                            Laporan Penjualan Bulanan
+                        </a>
+                    </li>
+                    <li data-section="history">
+                        <a href="{{ route('komisi.perbulan') }}">
+                            <i class="fas fa-history"></i>
+                            Laporan Komisi Bulanan
+                        </a>
+                    </li>
+                    <li data-section="history">
+                        <a href="{{ route('laporan.gudang') }}">
+                            <i class="fas fa-history"></i>
+                            Laporan Stok Gudang
                         </a>
                     </li>
                 </ul>

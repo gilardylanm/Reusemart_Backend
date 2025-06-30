@@ -238,9 +238,14 @@
             <img src="/img/Logo ReuseMart.jpg" alt="ReuseMart Logo">
         </div>
         <nav>
-            <a href="#">Beranda</a>
-            <a href="#">Kelola Gudang</a>
-            <a href="#">Profil Akun</a>
+            <a href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+            </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </nav>
     </header>
 
@@ -250,19 +255,19 @@
             <div class="col-md-2 p-0 sidebar">
                 <ul class="sidebar-menu">
                     <li class="active">
-                        <a href="#" class="kelola-penitipan">
+                        <a href="{{ route('halamanGudang') }}" class="kelola-penitipan">
                             <i class="fas fa-box"></i>
                             Kelola Penitipan
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="kelola-pengiriman">
+                        <a href="{{ route('jadwal.kirim') }}" class="kelola-pengiriman">
                             <i class="fas fa-truck"></i>
                             Kelola Jadwal Pengiriman
                         </a>
                     </li>
-                    <li>
-                        <a href="#" class="kelola-ambil">
+                    <li >
+                        <a href="{{ route('jadwal.ambil') }}" class="kelola-ambil">
                             <i class="fas fa-hand-holding"></i>
                             Kelola Jadwal Pengambilan
                         </a>
@@ -306,9 +311,9 @@
                                     <td>{{ \Carbon\Carbon::parse($penitipan->TANGGAL_BERAKHIR)->format('d/m/Y') }}</td>
                                     <td>
                                         @if ($penitipan->STATUS_PERPANJANGAN)
-                                            <span class="badge bg-success">Ya</span>
+                                            Ya
                                         @else
-                                            <span class="badge bg-danger">Tidak</span>
+                                            Tidak
                                         @endif
                                     </td>
                                     <td>
@@ -328,11 +333,11 @@
                                                 style="display:inline-block;">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger btn-sm mt-1 ">
-                                                    <i class="fas fa-check-circle"></i> Konfirmasi Pengambilan
+                                                    <i class="fas fa-check-circle"></i> Konfirmasi Pengambilan Kembali
                                                 </button>
                                             </form>
                                         @elseif ($penitipan->STATUS_AMBIL_KEMBALI)
-                                            <span class="badge bg-success mt-1">Sudah Dikonfirmasi</span>
+                                            <span class="badge bg-success mt-1">Pengambilan Kembali Sudah Dikonfirmasi</span>
                                         @endif
                                     </td>
                                 </tr>
